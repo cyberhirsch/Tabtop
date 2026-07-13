@@ -20,6 +20,7 @@ import { JsWidget } from './widgets/JsWidget';
 import { NbaWidget } from './widgets/NbaWidget';
 import { RainRadarWidget } from './widgets/RainRadarWidget';
 import { CalendarWidget } from './widgets/CalendarWidget';
+import { GalleryWidget } from './widgets/GalleryWidget';
 import { useStore } from '../store/useStore';
 
 export const GridItem = ({ item, onContextMenu }) => {
@@ -129,6 +130,7 @@ export const GridItem = ({ item, onContextMenu }) => {
         else if (item.config?.type === 'nba') content = <NbaWidget config={item.config} />;
         else if (item.config?.type === 'radar') content = <RainRadarWidget config={item.config} />;
         else if (item.config?.type === 'calendar') content = <CalendarWidget config={item.config} />;
+        else if (item.config?.type === 'gallery') content = <GalleryWidget config={item.config} item={item} />;
         else content = (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
                 <Layout size={32} opacity={0.6} />

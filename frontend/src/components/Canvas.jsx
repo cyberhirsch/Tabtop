@@ -19,9 +19,11 @@ export const Canvas = () => {
         fetchItems();
     }, [fetchItems, user]);
 
+    // Records with a parent live inside a widget (e.g. gallery images), not on the desktop
+    const desktopItems = useMemo(() => (items || []).filter(i => !i.parent), [items]);
+
     const layout = useMemo(() => {
-        if (!items) return [];
-        return items.map(item => {
+        return desktopItems.map(item => {
             const pos = item.position || {};
             const isWidget = item.type === 'widget';
             return {
@@ -33,7 +35,7 @@ export const Canvas = () => {
                 isResizable: isWidget
             };
         });
-    }, [items]);
+    }, [desktopItems]);
 
     const handleContextMenu = useCallback((e, targetId = null) => {
         e.preventDefault();
@@ -124,7 +126,7 @@ export const Canvas = () => {
 
     const autoArrange = useCallback(() => {
         const cols = gridConfig.cols;
-        const totalItems = [...items];
+        const totalItems = [...desktopItems];
 
         // 1. Sort items: Widgets first (by area descending), then Links/Files (alphabetically)
         totalItems.sort((a, b) => {
@@ -191,7 +193,7 @@ export const Canvas = () => {
         if (updates.length > 0) {
             useStore.getState().bulkSyncLayout(updates);
         }
-    }, [items, gridConfig.cols]);
+    }, [desktopItems, gridConfig.cols]);
 
     const menuItems = useMemo(() => {
         const baseMenu = [];
@@ -313,6 +315,7 @@ export const Canvas = () => {
                 cols={{ lg: gridConfig.cols, md: Math.floor(gridConfig.cols * 0.75), sm: Math.floor(gridConfig.cols * 0.5), xs: 8, xss: 4 }}
                 rowHeight={gridConfig.rowHeight}
                 draggableHandle=".drag-handle"
+                draggableCancel=".grid-drag-cancel"
                 onDragStart={showGrid}
                 onDragStop={(l) => {
                     hideGrid();
@@ -324,7 +327,7 @@ export const Canvas = () => {
                 preventCollision={true}
                 resizeHandles={['se', 'sw']}
             >
-                {items.map(item => (
+                {desktopItems.map(item => (
                     <div key={item.id} i={item.id} className="drag-handle">
                         <GridItem item={item} onContextMenu={handleContextMenu} />
                     </div>

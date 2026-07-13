@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Search, Clock, Cloud, Rss, Quote, Edit3, Sun, CheckSquare, Smile, Link as LinkIcon, Github, Globe, MessageSquare, Briefcase, BookOpen, Code, Trophy, Layout, Map, CalendarDays } from 'lucide-react';
+import { X, Search, Clock, Cloud, Rss, Quote, Edit3, Sun, CheckSquare, Smile, Link as LinkIcon, Github, Globe, MessageSquare, Briefcase, BookOpen, Code, Trophy, Layout, Map, CalendarDays, Image } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
 const WIDGET_CATEGORIES = [
@@ -11,6 +11,7 @@ const WIDGET_CATEGORIES = [
             { id: 'todo', name: 'To Do', description: 'Interactive checklist for your tasks', icon: CheckSquare, config: { type: 'todo', todos: [] }, size: { w: 6, h: 8 } },
             { id: 'workhours', name: 'Work Hours', description: 'Track your daily progress', icon: Briefcase, config: { type: 'workhours', startHour: 9, endHour: 17 }, size: { w: 8, h: 3 } },
             { id: 'links', name: 'Quick Links', description: 'Fast access to your favorite sites', icon: LinkIcon, config: { type: 'links', links: [] }, size: { w: 6, h: 6 } },
+            { id: 'gallery', name: 'Gallery', description: 'Drag or paste images onto a pannable, zoomable canvas', icon: Image, config: { type: 'gallery' }, size: { w: 12, h: 10 } },
         ]
     },
     {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Save, Clock, Cloud, Rss, Search, Quote, Edit3, Sun, CheckSquare, Smile, Link as LinkIcon, Github, Globe, MessageSquare, Briefcase, BookOpen, Code, Trophy, Map, CalendarDays } from 'lucide-react';
+import { X, Save, Clock, Cloud, Rss, Search, Quote, Edit3, Sun, CheckSquare, Smile, Link as LinkIcon, Github, Globe, MessageSquare, Briefcase, BookOpen, Code, Trophy, Map, CalendarDays, Image } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { ClockWidgetSettings } from './widgets/ClockWidget';
 import { WeatherWidgetSettings } from './widgets/WeatherWidget';
@@ -20,6 +20,7 @@ import { JsWidgetSettings } from './widgets/JsWidget';
 import { NbaWidgetSettings } from './widgets/NbaWidget';
 import { RainRadarWidgetSettings } from './widgets/RainRadarWidget';
 import { CalendarWidgetSettings } from './widgets/CalendarWidget';
+import { GalleryWidgetSettings } from './widgets/GalleryWidget';
 
 const SETTINGS_MAP = {
     clock: ClockWidgetSettings,
@@ -40,7 +41,8 @@ const SETTINGS_MAP = {
     js: JsWidgetSettings,
     nba: NbaWidgetSettings,
     radar: RainRadarWidgetSettings,
-    calendar: CalendarWidgetSettings
+    calendar: CalendarWidgetSettings,
+    gallery: GalleryWidgetSettings
 };
 
 const ICON_MAP = {
@@ -62,7 +64,8 @@ const ICON_MAP = {
     js: Code,
     nba: Trophy,
     radar: Map,
-    calendar: CalendarDays
+    calendar: CalendarDays,
+    gallery: Image
 };
 
 const WidgetSettingsContent = ({ item }) => {

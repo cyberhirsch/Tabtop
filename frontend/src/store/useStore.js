@@ -248,8 +248,11 @@ export const useStore = create((set) => ({
 
     deleteItem: async (id) => {
         try {
+            // Delete child records first (e.g. gallery images parented to a widget)
+            const children = useStore.getState().items.filter(i => i.parent === id);
+            await Promise.all(children.map(c => pb.collection('Tabtop').delete(c.id)));
             await pb.collection('Tabtop').delete(id);
-            set((state) => ({ items: state.items.filter(i => i.id !== id) }));
+            set((state) => ({ items: state.items.filter(i => i.id !== id && i.parent !== id) }));
         } catch (error) {
             console.error('Failed to delete item:', error);
         }
