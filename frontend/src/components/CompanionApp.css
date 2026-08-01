@@ -1,0 +1,535 @@
+.companion-shell {
+    height: 100vh;
+    height: 100dvh; /* mobile browsers: real visible viewport, not the address-bar-inclusive one */
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    background:
+        radial-gradient(circle at 20% 0%, rgba(0, 188, 212, 0.18), transparent 34%),
+        linear-gradient(145deg, #101113 0%, #181a1f 100%);
+    color: var(--text-primary);
+    overflow: hidden;
+}
+
+.companion-header {
+    padding: max(24px, env(safe-area-inset-top)) 20px 16px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.companion-header p {
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.companion-header h1 {
+    font-size: clamp(1.8rem, 8vw, 2.8rem);
+    line-height: 1.05;
+    margin-top: 4px;
+}
+
+.companion-title-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+}
+
+.companion-title-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+    cursor: pointer;
+}
+
+.companion-title-chevron {
+    flex-shrink: 0;
+    opacity: 0.6;
+    margin-bottom: 0.15em;
+}
+
+.companion-content {
+    flex: 1;
+    min-height: 0; /* let this shrink so the nav below it is never pushed out of the shell */
+    overflow: auto;
+    overscroll-behavior-y: contain;
+    padding: 0 14px 14px;
+}
+
+.companion-panel {
+    width: min(100%, 640px);
+    margin: 0 auto;
+    padding: 16px;
+    border-radius: calc(22px * var(--radius-scale, 1));
+    background: rgba(255, 255, 255, 0.055);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+}
+
+.companion-section-heading {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 22px;
+}
+
+.companion-section-heading h2,
+.companion-settings-group h2 {
+    font-size: 1.08rem;
+    margin: 0;
+}
+
+.companion-section-heading p {
+    margin-top: 3px;
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+}
+
+.companion-form,
+.companion-settings-group {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.companion-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.companion-form input,
+.companion-input-icon,
+.companion-add-row input,
+.companion-notes-panel textarea {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: calc(14px * var(--radius-scale, 1));
+    color: white;
+    font: inherit;
+}
+
+.companion-form input,
+.companion-add-row input {
+    min-height: 48px;
+    padding: 0 14px;
+}
+
+.companion-input-icon {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 14px;
+}
+
+.companion-input-icon input {
+    border: 0;
+    background: transparent;
+    padding-left: 0;
+}
+
+.companion-primary-button,
+.companion-add-row button {
+    min-height: 48px;
+    border: 0;
+    border-radius: calc(14px * var(--radius-scale, 1));
+    background: var(--accent-primary);
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.companion-primary-button:disabled {
+    opacity: 0.7;
+}
+
+.companion-link-button {
+    width: 100%;
+    margin-top: 14px;
+    background: none;
+    border: 0;
+    color: var(--text-secondary);
+    text-decoration: underline;
+}
+
+.companion-add-row {
+    display: flex;
+    gap: 10px;
+    margin: 14px 0;
+}
+
+.companion-add-row > input:first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+.companion-add-row input.companion-amount-input {
+    flex: 0 0 56px;
+    width: 56px;
+    min-height: 48px;
+    padding: 0 8px;
+}
+
+.companion-add-row button {
+    flex: 0 0 52px;
+}
+
+.companion-add-row button {
+    display: grid;
+    place-items: center;
+    padding: 0;
+}
+
+.companion-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.companion-panel-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.companion-icon-toggle {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border-radius: calc(12px * var(--radius-scale, 1));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-secondary);
+}
+
+.companion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.companion-todo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 58px;
+    padding: 8px 10px;
+    border-radius: calc(16px * var(--radius-scale, 1));
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.companion-todo > button:first-child {
+    flex: 0 0 auto;
+}
+
+.companion-todo span {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    cursor: text;
+}
+
+.companion-todo-edit-input {
+    flex: 1;
+    min-width: 0;
+    min-height: 34px;
+    padding: 2px 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: calc(8px * var(--radius-scale, 1));
+    color: white;
+    font: inherit;
+    font-size: 1rem;
+}
+
+.companion-amount-input {
+    flex: 0 0 56px;
+    width: 56px;
+    min-height: 38px;
+    padding: 0 8px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: calc(10px * var(--radius-scale, 1));
+    color: white;
+    font: inherit;
+    font-size: 0.85rem;
+}
+
+.companion-todo.done span {
+    opacity: 0.55;
+    text-decoration: line-through;
+}
+
+.companion-upload-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.companion-file {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 58px;
+    padding: 8px 10px;
+    border-radius: calc(16px * var(--radius-scale, 1));
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.companion-file-name {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.companion-file button {
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border-radius: calc(12px * var(--radius-scale, 1));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.06);
+    color: white;
+}
+
+.companion-file button.danger {
+    color: #ff7f7f;
+}
+
+.companion-todo button,
+.companion-account-card button,
+.companion-check-row button {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border-radius: calc(12px * var(--radius-scale, 1));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.06);
+    color: white;
+}
+
+.companion-todo button.danger {
+    color: #ff7f7f;
+}
+
+.companion-empty {
+    min-height: 180px;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 10px;
+    color: var(--text-tertiary);
+}
+
+.companion-notes-panel {
+    display: flex;
+    min-height: calc(100vh - 190px);
+    flex-direction: column;
+    gap: 14px;
+}
+
+.companion-notes-panel textarea {
+    flex: 1;
+    min-height: 320px;
+    padding: 14px;
+    resize: none;
+    line-height: 1.5;
+    outline: none;
+}
+
+.companion-account-card,
+.companion-check-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px;
+    border-radius: calc(16px * var(--radius-scale, 1));
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.companion-account-card p {
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    margin-bottom: 2px;
+}
+
+.companion-account-card strong {
+    display: block;
+    max-width: 230px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.companion-settings-group {
+    margin-top: 18px;
+}
+
+.companion-check-row div {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.companion-check-row span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.companion-check-row button.selected {
+    background: var(--accent-primary);
+}
+
+.companion-check-row button:disabled {
+    opacity: 0.65;
+}
+
+/* Deliberately NOT position:fixed. Fixed elements resolve against the layout viewport,
+   which mobile browsers keep at the toolbar-hidden size, while .companion-shell is sized
+   with 100dvh (shrinks when the address bar shows). Those two disagree whenever the toolbar
+   is expanded — which is exactly the state pull-to-refresh leaves the page in — leaving the
+   nav anchored below the visible area. As an ordinary flex child it tracks the same dvh
+   the rest of the layout uses, so the two can never drift apart. */
+.companion-bottom-nav {
+    flex: 0 0 auto;
+    z-index: 10;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 8px;
+    width: calc(100% - 24px);
+    max-width: 640px;
+    margin: 0 auto max(12px, env(safe-area-inset-bottom));
+    padding: 8px;
+    border-radius: calc(24px * var(--radius-scale, 1));
+    background: rgba(14, 15, 18, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.45);
+}
+
+.companion-bottom-nav button {
+    min-width: 0;
+    height: 58px;
+    padding: 6px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border: 0;
+    border-radius: calc(17px * var(--radius-scale, 1));
+    background: transparent;
+    color: var(--text-secondary);
+}
+
+.companion-bottom-nav button.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.companion-bottom-nav span {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+@media (min-width: 760px) {
+    .companion-shell {
+        align-items: center;
+    }
+
+    .companion-header,
+    .companion-content {
+        width: min(100vw, 720px);
+    }
+}
+
+/* Portrait-only: the web manifest requests a portrait lock for installed/standalone
+   PWAs, but that's not honored everywhere (notably iOS Safari), so this overlay
+   is the universal fallback for a plain browser tab in landscape on a phone. */
+.companion-rotate-lock {
+    display: none;
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+    .companion-header,
+    .companion-content,
+    .companion-bottom-nav {
+        display: none;
+    }
+
+    .companion-rotate-lock {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        height: 100%;
+        text-align: center;
+        padding: 24px;
+        color: var(--text-secondary);
+    }
+}
+
+.companion-pull-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 0;
+    overflow: hidden;
+    color: var(--text-secondary);
+    transition: height 0.15s ease;
+}
+
+.companion-pull-indicator svg {
+    transition: transform 0.15s ease;
+}
+
+.companion-pull-indicator svg.spinning {
+    animation: companion-spin 0.6s linear infinite;
+}
+
+@keyframes companion-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

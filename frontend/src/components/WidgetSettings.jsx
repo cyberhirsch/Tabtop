@@ -71,9 +71,10 @@ const ICON_MAP = {
 const WidgetSettingsContent = ({ item }) => {
     const { setWidgetSettings, updateItem } = useStore();
     const [config, setConfig] = useState(item.config || {});
+    const [name, setName] = useState(item.name || '');
 
     const handleSave = async () => {
-        await updateItem(item.id, { config });
+        await updateItem(item.id, { config, name });
         setWidgetSettings(false);
     };
 
@@ -111,7 +112,22 @@ const WidgetSettingsContent = ({ item }) => {
                     </button>
                 </div>
 
-                <div style={{ padding: '10px 0' }}>
+                <div style={{ padding: '10px 0', display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                    <label style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        <span style={{ fontSize: '0.8rem', opacity: 0.6 }}>Widget Name</span>
+                        <input
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder={`e.g. Groceries, Tasks...`}
+                            style={{
+                                background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                                padding: '8px 12px', borderRadius: `calc(8px * var(--radius-scale, 1))`,
+                                color: 'white', fontSize: '0.9rem'
+                            }}
+                        />
+                    </label>
+
                     {SettingsComponent ? (
                         <SettingsComponent config={config} setConfig={setConfig} />
                     ) : (

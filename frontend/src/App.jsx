@@ -4,10 +4,16 @@ import { WidgetSettings } from './components/WidgetSettings'
 import { Welcome } from './components/Welcome'
 import { WidgetGallery } from './components/WidgetGallery'
 import { AdminPanel } from './components/AdminPanel'
+import { CompanionApp } from './components/CompanionApp'
 import { useStore } from './store/useStore'
 
 function App() {
   const user = useStore(state => state.user)
+  const isMobileApp = window.location.pathname === '/mobile' || window.location.pathname.startsWith('/mobile/')
+
+  if (isMobileApp) {
+    return <CompanionApp />
+  }
 
   if (!user) {
     return (

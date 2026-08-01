@@ -8,6 +8,7 @@ export const useStore = create((set) => ({
         set({ user });
         if (user && user.preferences) {
             if (user.preferences.gridConfig) set({ gridConfig: { ...user.preferences.gridConfig } });
+            if (user.preferences.companionMenu) set({ companionMenu: user.preferences.companionMenu });
             if (user.preferences.themeConfig) {
                 // Merge saved preferences on top of current defaults (preserves any new fields added to defaults)
                 const currentTheme = useStore.getState().themeConfig;
@@ -34,6 +35,31 @@ export const useStore = create((set) => ({
 
     isAdminPanelOpen: false,
     toggleAdminPanel: () => set((state) => ({ isAdminPanelOpen: !state.isAdminPanelOpen })),
+
+    companionMenu: ['todo', 'notes', 'files', 'settings'],
+    setCompanionMenu: (companionMenu) => {
+        set({ companionMenu });
+        useStore.getState().saveUserPreferences({ companionMenu });
+    },
+    saveUserPreferences: async (preferences) => {
+        const currentUser = useStore.getState().user;
+        if (!currentUser) return null;
+
+        try {
+            const nextPreferences = {
+                ...(currentUser.preferences || {}),
+                ...preferences
+            };
+            const record = await pb.collection('TabtopUsers').update(currentUser.id, {
+                preferences: nextPreferences
+            });
+            set({ user: record });
+            return record;
+        } catch (error) {
+            console.error('Failed to save preferences:', error);
+            return null;
+        }
+    },
 
     users: [],
     fetchUsers: async () => {
@@ -86,9 +112,7 @@ export const useStore = create((set) => ({
         window._savePrefsTimeout = setTimeout(() => {
             const state = useStore.getState();
             if (state.user) {
-                pb.collection('TabtopUsers').update(state.user.id, {
-                    preferences: { gridConfig: state.gridConfig, themeConfig: state.themeConfig }
-                });
+                state.saveUserPreferences({ gridConfig: state.gridConfig, themeConfig: state.themeConfig });
             }
         }, 1000);
     },
@@ -148,9 +172,7 @@ export const useStore = create((set) => ({
                 window._savePrefsTimeout = setTimeout(() => {
                     const state = useStore.getState();
                     if (state.user) {
-                        pb.collection('TabtopUsers').update(state.user.id, {
-                            preferences: { gridConfig: state.gridConfig, themeConfig: newTheme }
-                        });
+                        state.saveUserPreferences({ gridConfig: state.gridConfig, themeConfig: newTheme });
                     }
                 }, 1000);
             }
@@ -173,6 +195,53 @@ export const useStore = create((set) => ({
             }
             return [];
         }
+    },
+
+    // Scans existing desktop items (skipping widget children like gallery images, which
+    // aren't placed on the grid) for the first open cell of the given size. Used wherever
+    // a new item is created without an explicit position, so items don't all stack at (0,0).
+    findFreePosition: (size = {}) => {
+        const { items, gridConfig } = useStore.getState();
+        const cols = gridConfig.cols;
+        const w = Math.min(size.w || 4, cols);
+        const h = size.h || 4;
+
+        const occupied = new Set();
+        items.forEach(item => {
+            const pos = item.position;
+            if (!pos || item.parent) return;
+            for (let i = pos.x; i < pos.x + (pos.w || 1); i++) {
+                for (let j = pos.y; j < pos.y + (pos.h || 1); j++) {
+                    occupied.add(`${i},${j}`);
+                }
+            }
+        });
+
+        const isFree = (x, y) => {
+            if (x + w > cols) return false;
+            for (let i = x; i < x + w; i++) {
+                for (let j = y; j < y + h; j++) {
+                    if (occupied.has(`${i},${j}`)) return false;
+                }
+            }
+            return true;
+        };
+
+        for (let y = 0; y < 1000; y++) {
+            for (let x = 0; x <= cols - w; x++) {
+                if (isFree(x, y)) {
+                    // Mark occupied immediately so back-to-back calls in the same batch
+                    // (e.g. uploading several files at once) don't land on the same slot.
+                    for (let i = x; i < x + w; i++) {
+                        for (let j = y; j < y + h; j++) {
+                            occupied.add(`${i},${j}`);
+                        }
+                    }
+                    return { x, y, w, h };
+                }
+            }
+        }
+        return { x: 0, y: 0, w, h };
     },
 
     createItem: async (data) => {
@@ -290,6 +359,20 @@ useStore.getState().subscribe();
 pb.authStore.onChange((token, model) => {
     useStore.getState().setUser(model);
 });
+
+// Mobile browsers suspend the realtime SSE connection when the tab is backgrounded
+// or the screen locks, and it doesn't always resync on its own — force a refetch
+// whenever the app becomes visible/focused again so stale data self-heals.
+if (typeof document !== 'undefined') {
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && pb.authStore.model) {
+            useStore.getState().fetchItems();
+        }
+    });
+    window.addEventListener('focus', () => {
+        if (pb.authStore.model) useStore.getState().fetchItems();
+    });
+}
 
 // Apply default theme to CSS immediately on startup (before any async DB load)
 // This ensures CSS variables match the store's initial state from frame 1

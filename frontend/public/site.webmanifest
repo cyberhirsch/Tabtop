@@ -1,0 +1,19 @@
+{
+  "name": "Tabtop Companion",
+  "short_name": "Tabtop",
+  "description": "Edit Tabtop widgets from your phone.",
+  "start_url": "/mobile",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#101113",
+  "theme_color": "#101113",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

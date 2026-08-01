@@ -4,7 +4,7 @@ import { useStore } from '../store/useStore';
 import { ContextMenu } from './ContextMenu';
 import { pb } from '../api/pocketbase';
 import { GridItem } from './GridItem';
-import { Layout, Plus, Link as LinkIcon, Rss, Trash2, Maximize2, Minimize2, Image as ImageIcon, Settings as SettingsIcon, LayoutGrid, Edit3, Share2 } from 'lucide-react';
+import { Layout, Plus, Link as LinkIcon, Rss, Trash2, Maximize2, Minimize2, Image as ImageIcon, Settings as SettingsIcon, LayoutGrid, Edit3, Share2, Download } from 'lucide-react';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
@@ -54,7 +54,7 @@ export const Canvas = () => {
             return;
         }
         const name = extra.name || prompt(`Enter name for the new ${type}:`) || `New ${type}`;
-        const position = extra.position || { x: 0, y: 0, w: 4, h: 4 };
+        const position = extra.position || useStore.getState().findFreePosition({ w: 4, h: 4 });
 
         const data = {
             type: type,
@@ -241,6 +241,33 @@ export const Canvas = () => {
                         }
                     }
                 });
+                // Only actual uploads can be downloaded — a link item has no stored file.
+                if (targetItem.type === 'file' && targetItem.payload) {
+                    baseMenu.push({
+                        label: 'Download',
+                        icon: <Download size={16} />,
+                        onClick: async () => {
+                            try {
+                                const token = await pb.files.getToken();
+                                const res = await fetch(pb.files.getURL(targetItem, targetItem.payload, { token }));
+                                // Fetch to a blob first: the download attribute is ignored on cross-origin URLs
+                                const blob = await res.blob();
+                                const objectUrl = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = objectUrl;
+                                // Prefer the display name (the original filename), but fall back to the
+                                // stored payload if a rename has left it without an extension.
+                                a.download = targetItem.name?.includes('.') ? targetItem.name : targetItem.payload;
+                                document.body.appendChild(a);
+                                a.click();
+                                a.remove();
+                                URL.revokeObjectURL(objectUrl);
+                            } catch (error) {
+                                console.error('Download failed', error);
+                            }
+                        }
+                    });
+                }
                 baseMenu.push({
                     label: 'Share',
                     icon: <Share2 size={16} />,

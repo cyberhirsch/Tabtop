@@ -8,7 +8,7 @@ const WIDGET_CATEGORIES = [
         name: 'Productivity',
         widgets: [
             { id: 'notes', name: 'Notes', description: 'Simple sticky notes for your dashboard', icon: Edit3, config: { type: 'notes' }, size: { w: 6, h: 6 } },
-            { id: 'todo', name: 'To Do', description: 'Interactive checklist for your tasks', icon: CheckSquare, config: { type: 'todo', todos: [] }, size: { w: 6, h: 8 } },
+            { id: 'todo', name: 'Checklist', description: 'Interactive checklist for your tasks', icon: CheckSquare, config: { type: 'todo', todos: [] }, size: { w: 6, h: 8 } },
             { id: 'workhours', name: 'Work Hours', description: 'Track your daily progress', icon: Briefcase, config: { type: 'workhours', startHour: 9, endHour: 17 }, size: { w: 8, h: 3 } },
             { id: 'links', name: 'Quick Links', description: 'Fast access to your favorite sites', icon: LinkIcon, config: { type: 'links', links: [] }, size: { w: 6, h: 6 } },
             { id: 'gallery', name: 'Gallery', description: 'Drag or paste images onto a pannable, zoomable canvas', icon: Image, config: { type: 'gallery' }, size: { w: 12, h: 10 } },
