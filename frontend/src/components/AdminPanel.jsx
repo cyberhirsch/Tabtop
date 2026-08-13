@@ -226,10 +226,10 @@ export const AdminPanel = () => {
                                     cursor: 'pointer'
                                 }}
                             >
-                                <option value="trial">Trial</option>
-                                <option value="member">Member</option>
-                                <option value="patron">Patron</option>
-                                <option value="admin">Admin</option>
+                                <option value="trial" style={{ background: '#1c1c1e', color: 'white' }}>Trial</option>
+                                <option value="member" style={{ background: '#1c1c1e', color: 'white' }}>Member</option>
+                                <option value="patron" style={{ background: '#1c1c1e', color: 'white' }}>Patron</option>
+                                <option value="admin" style={{ background: '#1c1c1e', color: 'white' }}>Admin</option>
                             </select>
                         </div>
                         <button
@@ -370,10 +370,10 @@ export const AdminPanel = () => {
                                                      cursor: 'pointer'
                                                  }}
                                              >
-                                                 <option value="trial">Trial</option>
-                                                 <option value="member">Member</option>
-                                                 <option value="patron">Patron</option>
-                                                 <option value="admin">Admin</option>
+                                                 <option value="trial" style={{ background: '#1c1c1e', color: 'white' }}>Trial</option>
+                                                 <option value="member" style={{ background: '#1c1c1e', color: 'white' }}>Member</option>
+                                                 <option value="patron" style={{ background: '#1c1c1e', color: 'white' }}>Patron</option>
+                                                 <option value="admin" style={{ background: '#1c1c1e', color: 'white' }}>Admin</option>
                                              </select>
                                          </td>
                                      </tr>
