@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useStore } from '../store/useStore';
-import { Shield, X, User, Calendar, Star, Crown, Clock, Check, AlertCircle } from 'lucide-react';
+import { Shield, X, User, Calendar, Star, Crown, Clock, Check, AlertCircle, UserPlus } from 'lucide-react';
 
 export const AdminPanel = () => {
-    const { isAdminPanelOpen, toggleAdminPanel, users, fetchUsers, updateUserStatus } = useStore();
+    const { isAdminPanelOpen, toggleAdminPanel, users, fetchUsers, updateUserStatus, createUser } = useStore();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [showAddUser, setShowAddUser] = useState(false);
+    const [newUser, setNewUser] = useState({ email: '', password: '', account_type: 'trial' });
+    const [creating, setCreating] = useState(false);
+    const [createError, setCreateError] = useState(null);
 
     useEffect(() => {
         if (!isAdminPanelOpen) return;
@@ -29,6 +33,25 @@ export const AdminPanel = () => {
             await updateUserStatus(userId, { account_type: newType });
         } catch (err) {
             console.error(err);
+        }
+    };
+
+    const handleCreateUser = async (e) => {
+        e.preventDefault();
+        setCreateError(null);
+        if (newUser.password.length < 8) {
+            setCreateError('Password must be at least 8 characters.');
+            return;
+        }
+        setCreating(true);
+        try {
+            await createUser(newUser);
+            setNewUser({ email: '', password: '', account_type: 'trial' });
+            setShowAddUser(false);
+        } catch (err) {
+            setCreateError(err?.data?.message || err?.message || 'Failed to create user.');
+        } finally {
+            setCreating(false);
         }
     };
 
@@ -90,27 +113,150 @@ export const AdminPanel = () => {
                             <p style={{ opacity: 0.6, fontSize: '0.9rem' }}>Manage user accounts and subscription statuses</p>
                         </div>
                     </div>
-                    <button 
-                        onClick={toggleAdminPanel}
-                        style={{ 
-                            background: 'rgba(255, 255, 255, 0.05)', 
-                            border: '1px solid rgba(255, 255, 255, 0.1)', 
-                            borderRadius: '50%', 
-                            width: '40px', 
-                            height: '40px', 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            justifyContent: 'center',
-                            cursor: 'pointer',
-                            color: 'white',
-                            transition: 'all 0.2s'
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'}
-                        onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'}
-                    >
-                        <X size={20} />
-                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <button
+                            onClick={() => { setShowAddUser(v => !v); setCreateError(null); }}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                background: showAddUser ? 'rgba(255, 255, 255, 0.1)' : 'var(--accent-primary)',
+                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                borderRadius: '10px',
+                                padding: '10px 16px',
+                                cursor: 'pointer',
+                                color: 'white',
+                                fontSize: '0.9rem',
+                                fontWeight: '600',
+                                transition: 'all 0.2s'
+                            }}
+                        >
+                            <UserPlus size={16} />
+                            Add User
+                        </button>
+                        <button
+                            onClick={toggleAdminPanel}
+                            style={{
+                                background: 'rgba(255, 255, 255, 0.05)',
+                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                borderRadius: '50%',
+                                width: '40px',
+                                height: '40px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                cursor: 'pointer',
+                                color: 'white',
+                                transition: 'all 0.2s'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'}
+                            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'}
+                        >
+                            <X size={20} />
+                        </button>
+                    </div>
                 </div>
+
+                {showAddUser && (
+                    <form
+                        onSubmit={handleCreateUser}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'flex-end',
+                            gap: '12px',
+                            padding: '20px',
+                            background: 'rgba(255, 255, 255, 0.03)',
+                            border: '1px solid rgba(255, 255, 255, 0.08)',
+                            borderRadius: '12px',
+                            flexWrap: 'wrap'
+                        }}
+                    >
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: '1 1 220px' }}>
+                            <label style={{ fontSize: '0.75rem', opacity: 0.5 }}>EMAIL</label>
+                            <input
+                                type="email"
+                                required
+                                value={newUser.email}
+                                onChange={(e) => setNewUser(u => ({ ...u, email: e.target.value }))}
+                                placeholder="name@example.com"
+                                style={{
+                                    background: 'rgba(255, 255, 255, 0.05)',
+                                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                                    color: 'white',
+                                    borderRadius: '8px',
+                                    padding: '10px 12px',
+                                    fontSize: '0.9rem',
+                                    outline: 'none'
+                                }}
+                            />
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: '1 1 180px' }}>
+                            <label style={{ fontSize: '0.75rem', opacity: 0.5 }}>PASSWORD (min 8 chars)</label>
+                            <input
+                                type="text"
+                                required
+                                minLength={8}
+                                value={newUser.password}
+                                onChange={(e) => setNewUser(u => ({ ...u, password: e.target.value }))}
+                                placeholder="At least 8 characters"
+                                style={{
+                                    background: 'rgba(255, 255, 255, 0.05)',
+                                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                                    color: 'white',
+                                    borderRadius: '8px',
+                                    padding: '10px 12px',
+                                    fontSize: '0.9rem',
+                                    outline: 'none'
+                                }}
+                            />
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                            <label style={{ fontSize: '0.75rem', opacity: 0.5 }}>ACCOUNT TYPE</label>
+                            <select
+                                value={newUser.account_type}
+                                onChange={(e) => setNewUser(u => ({ ...u, account_type: e.target.value }))}
+                                style={{
+                                    background: 'rgba(255, 255, 255, 0.05)',
+                                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                                    color: 'white',
+                                    borderRadius: '8px',
+                                    padding: '10px 12px',
+                                    fontSize: '0.9rem',
+                                    outline: 'none',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                <option value="trial">Trial</option>
+                                <option value="member">Member</option>
+                                <option value="patron">Patron</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <button
+                            type="submit"
+                            disabled={creating}
+                            style={{
+                                background: 'var(--accent-primary)',
+                                border: 'none',
+                                borderRadius: '8px',
+                                padding: '11px 20px',
+                                color: 'white',
+                                fontWeight: '600',
+                                fontSize: '0.9rem',
+                                cursor: creating ? 'default' : 'pointer',
+                                opacity: creating ? 0.6 : 1
+                            }}
+                        >
+                            {creating ? 'Creating…' : 'Create'}
+                        </button>
+                        {createError && (
+                            <div style={{ width: '100%', color: '#ef4444', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <AlertCircle size={14} />
+                                {createError}
+                            </div>
+                        )}
+                    </form>
+                )}
 
                 {error && (
                     <div style={{ 

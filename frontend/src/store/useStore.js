@@ -36,7 +36,7 @@ export const useStore = create((set) => ({
     isAdminPanelOpen: false,
     toggleAdminPanel: () => set((state) => ({ isAdminPanelOpen: !state.isAdminPanelOpen })),
 
-    companionMenu: ['todo', 'notes', 'files', 'settings'],
+    companionMenu: ['todo', 'notes', 'files', 'images', 'settings'],
     setCompanionMenu: (companionMenu) => {
         set({ companionMenu });
         useStore.getState().saveUserPreferences({ companionMenu });
@@ -78,6 +78,23 @@ export const useStore = create((set) => ({
         } catch (error) {
             console.error('Failed to fetch users:', error);
             return [];
+        }
+    },
+
+    createUser: async ({ email, password, account_type }) => {
+        try {
+            const record = await pb.collection('TabtopUsers').create({
+                email,
+                password,
+                passwordConfirm: password,
+                account_type,
+                emailVisibility: true,
+            });
+            set((state) => ({ users: [record, ...state.users] }));
+            return record;
+        } catch (error) {
+            console.error('Failed to create user:', error);
+            throw error;
         }
     },
 
